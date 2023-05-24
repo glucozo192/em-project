@@ -10,9 +10,19 @@ dropdb:
 migrate-up:
 	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose up
 
+migrate-up1:
+	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose up
+
 migrate-down:
 	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose down
 
+migrate-down1:
+	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose down 1
+
 sqlc:
 	sqlc generate
-.PHONY: createdb dropdb postgres migrate-up migrate-down sqlc
+
+server:
+	go run main.go
+
+.PHONY: createdb dropdb postgres migrate-up migrate-down sqlc server migrate-up1 migrate-down1 

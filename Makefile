@@ -2,22 +2,22 @@ postgres:
 	docker run --name postgres2 -p 5431:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=6677028a -d postgres
 
 createdb:
-	docker exec -it postgres2 createdb --username=root --owner=root simple_bank
+	docker exec -it postgres2 createdb --username=root --owner=root shop_vui
 
 dropdb:
-	docker exec -it postgres2 dropdb simple_bank
+	docker exec -it postgres2 dropdb shop_vui
 
 migrate-up:
-	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/shop_vui?sslmode=disable" -verbose up
 
 migrate-up1:
-	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/shop_vui?sslmode=disable" -verbose up
 
 migrate-down:
-	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose down
+	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/shop_vui?sslmode=disable" -verbose down
 
 migrate-down1:
-	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/simple_bank?sslmode=disable" -verbose down 1
+	migrate -path db/migration -database "postgresql://root:6677028a@localhost:5431/shop_vui?sslmode=disable" -verbose down 1
 
 sqlc:
 	sqlc generate

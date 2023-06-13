@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/glu/simplebank/db/sqlc"
-	"github.com/glu/simplebank/util"
+	db "github.com/glu/shopvui/db/sqlc"
+	"github.com/glu/shopvui/util"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 )

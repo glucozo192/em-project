@@ -1,20 +1,29 @@
-module github.com/glu/simplebank
+module github.com/glu/shopvui
 
 go 1.18
 
 require (
 	github.com/aead/chacha20poly1305 v0.0.0-20201124145622-1a5aba2a8b29
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gogo/protobuf v1.3.2
 	github.com/google/uuid v1.3.0
+	github.com/jackc/pgconn v1.9.1-0.20210724152538-d89c8390a530
+	github.com/jackc/pgerrcode v0.0.0-20220416144525-469b46aa5efa
+	github.com/jackc/pgtype v1.14.0
+	github.com/jackc/pgx/v4 v4.12.1-0.20210724153913-640aa07df17c
 	github.com/o1egl/paseto v1.0.0
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.15.0
-	github.com/techschool/simplebank v0.0.0-20230402121500-bdfe8e7aa022
 )
 
 require (
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
 	github.com/aead/poly1305 v0.0.0-20180717145839-3fee0db0b635 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
+	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
+	github.com/jackc/pgio v1.0.0 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgproto3/v2 v2.1.1 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 )
 
 require (
@@ -25,7 +34,7 @@ require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.13.0 // indirect
+	github.com/go-playground/validator/v10 v10.13.0
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -51,7 +60,7 @@ require (
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/protobuf v1.30.0
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

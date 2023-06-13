@@ -1,14 +1,16 @@
-package api
+package services
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	db "github.com/glu/shopvui/db/sqlc"
+	"github.com/glu/shopvui/internal/entities"
+	"github.com/glu/shopvui/internal/golibs/database"
 	"github.com/glu/shopvui/token"
 	"github.com/glu/shopvui/util"
-	"github.com/go-playground/validator/v10"
+	"github.com/jackc/pgtype"
 )
 
 // Server serves HTTP requests for our banking service.
@@ -17,6 +19,12 @@ type Server struct {
 	store      db.Store
 	tokenMaker token.Maker
 	router     *gin.Engine
+	db         database.Ext
+
+	UserRepo interface {
+		GetUser(ctx context.Context, db database.QueryExecer, email pgtype.Text) (*entities.User, error)
+		CreateUser(ctx context.Context, db database.QueryExecer, u *entities.User) (*entities.User, error)
+	}
 }
 
 // NewServer creates a new HTTP server and set up routing.
@@ -32,9 +40,9 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		tokenMaker: tokenMaker,
 	}
 
-	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		v.RegisterValidation("currency", validCurrency)
-	}
+	// if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+	// 	v.RegisterValidation("currency", validCurrency)
+	// }
 
 	server.setupRouter()
 	return server, nil
@@ -43,14 +51,14 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.POST("/users", server.createUser)
+	router.POST("/users/register", server.register)
 	router.POST("/users/login", server.loginUser)
-	router.POST("/tokens/renew_access", server.renewAccessToken)
+	// router.POST("/tokens/renew_access", server.renewAccessToken)
 
-	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
-	authRoutes.POST("/accounts", server.createAccount)
-	authRoutes.GET("/accounts/:id", server.getAccount)
-	authRoutes.GET("/accounts", server.listAccounts)
+	// authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+	// authRoutes.POST("/accounts", server.createAccount)
+	// authRoutes.GET("/accounts/:id", server.getAccount)
+	// authRoutes.GET("/accounts", server.listAccounts)
 
 	server.router = router
 }

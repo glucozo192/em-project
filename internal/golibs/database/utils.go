@@ -9,7 +9,7 @@ import (
 func FieldMap(e interface{}) ([]string, []interface{}) {
 	var fieldNames []string
 	var fieldValues []interface{}
-	v := reflect.ValueOf(&e).Elem()
+	v := reflect.ValueOf(e).Elem()
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Type().Field(i)
 		fieldName := field.Tag.Get("db")

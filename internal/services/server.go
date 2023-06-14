@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/glu/shopvui/db/sqlc"
 	"github.com/glu/shopvui/internal/entities"
 	"github.com/glu/shopvui/internal/golibs/database"
+	"github.com/glu/shopvui/internal/repositories"
 	"github.com/glu/shopvui/token"
 	"github.com/glu/shopvui/util"
 	"github.com/jackc/pgtype"
@@ -15,20 +15,21 @@ import (
 
 // Server serves HTTP requests for our banking service.
 type Server struct {
-	config     util.Config
-	store      db.Store
+	config util.Config
+	//store      db.Store
 	tokenMaker token.Maker
 	router     *gin.Engine
 	db         database.Ext
 
 	UserRepo interface {
-		GetUser(ctx context.Context, db database.QueryExecer, email pgtype.Text) (*entities.User, error)
-		CreateUser(ctx context.Context, db database.QueryExecer, u *entities.User) (*entities.User, error)
+		GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error)
+		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
+		//AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
 	}
 }
 
 // NewServer creates a new HTTP server and set up routing.
-func NewServer(config util.Config, store db.Store) (*Server, error) {
+func NewServer(config util.Config, db database.Ext) (*Server, error) {
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
@@ -36,8 +37,9 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 
 	server := &Server{
 		config:     config,
-		store:      store,
+		db:         db,
 		tokenMaker: tokenMaker,
+		UserRepo:   new(repositories.UserRepo),
 	}
 
 	// if v, ok := binding.Validator.Engine().(*validator.Validate); ok {

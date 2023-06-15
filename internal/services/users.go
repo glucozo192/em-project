@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/glu/shopvui/internal/constants"
 	"github.com/glu/shopvui/internal/entities"
 	"github.com/glu/shopvui/internal/golibs/database"
 	"github.com/glu/shopvui/internal/models"
@@ -128,17 +129,60 @@ func toRole(req models.AddRoleRequest) *entities.Role {
 	}
 }
 
-// func (s *Server) addRole(ctx *gin.Context) {
-// 	var req models.AddRoleRequest
-// 	if err := ctx.ShouldBindJSON(&req); err != nil {
-// 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-// 		return
-// 	}
-// 	roles := toRole(req)
-// 	err := s.UserRepo.AddRoles(ctx, s.db, roles)
-// 	if err != nil {
-// 		ctx.JSON(http.StatusInternalServerError, fmt.Errorf("can't init roles: %v", err))
-// 		return
-// 	}
-// 	ctx.JSON(http.StatusOK, "success")
-// }
+func (s *Server) addRole(ctx *gin.Context) {
+	var req models.AddRoleRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, "can't bind JSON")
+		return
+	}
+	roles := toRole(req)
+	err := s.UserRepo.AddRoles(ctx, s.db, roles)
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, "success")
+}
+
+// need to update for scaling
+func validateRole(role string) error {
+	if role == constants.RoleAdmin {
+		return fmt.Errorf("permission denied")
+	}
+	if role != constants.RoleUser && role != constants.RoleGuest {
+		return fmt.Errorf("invalid role")
+	}
+	return nil
+}
+
+func toUpdateRole(req models.UpdateRoleRequest, roleID string) *entities.UserRole {
+	return &entities.UserRole{
+		UserID: database.Text(req.UserID),
+		RoleID: database.Text(roleID),
+	}
+}
+
+func (s *Server) updateRole(ctx *gin.Context) {
+	var req models.UpdateRoleRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, "can't bind JSON")
+		return
+	}
+	if err := validateRole(req.RoleName); err != nil {
+		ctx.JSON(http.StatusBadRequest, err)
+		return
+	}
+	role, err := s.UserRepo.GetRole(ctx, s.db, database.Text(req.RoleName))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	user := toUpdateRole(req, role.ID.String)
+	_, err = s.UserRepo.UpdateRole(ctx, s.db, user)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, "success")
+}

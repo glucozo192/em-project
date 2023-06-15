@@ -19,7 +19,7 @@ func NewMockUserRepo() *mockUserRepo {
 }
 
 func (m *mockUserRepo) GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error) {
-	args := m.Called(ctx, email)
+	args := m.Called(ctx, db, email)
 	return args.Get(0).(*entities.User), args.Error(1)
 }
 

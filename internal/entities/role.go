@@ -3,12 +3,12 @@ package entities
 import "github.com/jackc/pgtype"
 
 type Role struct {
-	ID         pgtype.Text
-	Name       pgtype.Text
-	InsertedAt pgtype.Timestamptz
-	UpdatedAt  pgtype.Timestamptz
+	ID         pgtype.Text        `db:"id"`
+	Name       pgtype.Text        `db:"name"`
+	InsertedAt pgtype.Timestamptz `db:"inserted_at"`
+	UpdatedAt  pgtype.Timestamptz `db:"updated_at"`
 }
 
-func TableName(name string) string {
+func (r *Role) TableName() string {
 	return "roles"
 }

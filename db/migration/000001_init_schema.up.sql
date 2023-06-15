@@ -1,6 +1,6 @@
 -- get_schema_create
 create table users (
-  id text not null,
+  user_id text not null,
   email varchar(255) not null,
   password varchar(255) not null,
   first_name varchar(255) not null,
@@ -8,15 +8,15 @@ create table users (
   active bool default true,
   inserted_at timestamp with time zone not null,
   updated_at timestamp with time zone not null,
-  constraint pk_users primary key (id),
+  constraint pk_users primary key (user_id),
   constraint email_unique UNIQUE (email)
 );
 create table roles (
-  id text not null,
+  role_id text not null,
   name varchar(255) not null,
   inserted_at timestamp with time zone not null,
   updated_at timestamp with time zone not null,
-  constraint pk_roles primary key (id)
+  constraint pk_roles primary key (role_id)
 );
 create table user_roles (
   user_id text not null,
@@ -142,13 +142,13 @@ add constraint fk_products_product_tags foreign key (product_id) references prod
 alter table product_tags
 add constraint fk_tags_product_tags foreign key (tag_id) references tags (id);
 alter table user_roles
-add constraint fk_roles_user_roles foreign key (role_id) references roles (id);
+add constraint fk_roles_user_roles foreign key (role_id) references roles (role_id);
 alter table user_roles
 add constraint fk_users_user_roles foreign key (user_id) references users (id);
 alter table product_categories
 add constraint fk_category_products_categories foreign key (category_id) references categories (id);
 alter table sales_orders
-add constraint fk_user_sales_order foreign key (user_id) references users (id);
+add constraint fk_user_sales_order foreign key (user_id) references users (user_id);
 alter table sales_orders
 add constraint fk_session_sales_order foreign key (session_id) references sessions (id);
 alter table products

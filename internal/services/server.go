@@ -24,7 +24,9 @@ type Server struct {
 	UserRepo interface {
 		GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error)
 		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
-		//AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
+		AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
+		GetRole(ctx context.Context, db database.Ext, roleName pgtype.Text) (*entities.Role, error)
+		UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error)
 	}
 }
 
@@ -55,6 +57,8 @@ func (server *Server) setupRouter() {
 
 	router.POST("/users/register", server.register)
 	router.POST("/users/login", server.loginUser)
+	router.POST("/users/role", server.addRole)
+	router.POST("users/role/update", server.updateRole)
 	// router.POST("/tokens/renew_access", server.renewAccessToken)
 
 	// authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))

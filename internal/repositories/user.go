@@ -22,14 +22,10 @@ const getUserStmTpl = `
 func (r *UserRepo) GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error) {
 	e := &entities.User{}
 	fields, values := database.FieldMap(e)
-	f, v := e.FieldMap()
-	fmt.Println("f and v: ", f, v)
-	fmt.Println("fields and value: ", fields, values)
 	err := db.QueryRow(ctx, fmt.Sprintf(getUserStmTpl, strings.Join(fields, ","), "users"), email).Scan(values...)
 	if err != nil {
 		return nil, fmt.Errorf("db.QueryRow.Scan: %w", err)
 	}
-	fmt.Println(values...)
 	return e, nil
 }
 
@@ -44,6 +40,7 @@ func (r *UserRepo) CreateUser(ctx context.Context, db database.Ext, e *entities.
             password = excluded.password,
 			updated_at = excluded.updated_at
 		`, strings.Join(fieldNames, ", "), placeHolders)
+	//fmt.Println(query)
 	now := time.Now()
 	err := multierr.Combine(
 		e.InsertedAt.Set(now),
@@ -53,7 +50,6 @@ func (r *UserRepo) CreateUser(ctx context.Context, db database.Ext, e *entities.
 	if err != nil {
 		return &entities.User{}, fmt.Errorf("multierr.Combine: %w", err)
 	}
-	fmt.Println(e)
 	_, err = db.Exec(ctx, query, values...)
 	if err != nil {
 		return &entities.User{}, fmt.Errorf("db.Exec: %w", err)
@@ -61,8 +57,53 @@ func (r *UserRepo) CreateUser(ctx context.Context, db database.Ext, e *entities.
 	return e, nil
 }
 
-// func (r *UserRepo) AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error {
-// 	query:= `INSERT INTO roles (%s) VALUES (%s)`
-// 	fields, values := roles.FieldMap()
-// 	return nil
-// }
+func (r *UserRepo) AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error {
+	fields, values := database.FieldMap(roles)
+	placeHolders := database.GeneratePlaceholders(len(fields))
+	query := fmt.Sprintf(`INSERT INTO roles (%s) VALUES (%s)`, strings.Join(fields, ", "), placeHolders)
+	fmt.Println(query)
+	now := time.Now()
+	err := multierr.Combine(
+		roles.InsertedAt.Set(now),
+		roles.UpdatedAt.Set(now),
+	)
+	if err != nil {
+		return fmt.Errorf("multierr.Combine: %w", err)
+	}
+	_, err = db.Exec(ctx, query, values...)
+	if err != nil {
+		return fmt.Errorf("db.Exec: %w", err)
+	}
+	return nil
+}
+
+func (r *UserRepo) GetRole(ctx context.Context, db database.Ext, roleName pgtype.Text) (*entities.Role, error) {
+	e := &entities.Role{}
+	fields, values := database.FieldMap(e)
+	query := fmt.Sprintf(`SELECT %s FROM %s WHERE name = $1`, strings.Join(fields, ","), e.TableName())
+	err := db.QueryRow(ctx, query, roleName).Scan(values...)
+	if err != nil {
+		return nil, fmt.Errorf("db.QueryRow.Scan: %w", err)
+	}
+	return e, nil
+}
+func (r *UserRepo) UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error) {
+	fields, values := database.FieldMap(e)
+	placeHolders := database.GeneratePlaceholders(len(fields))
+	query := fmt.Sprintf(`
+		INSERT INTO %s (%s) VALUES (%s)
+	`, e.TableName(), strings.Join(fields, ","), placeHolders)
+	now := time.Now()
+	err := multierr.Combine(
+		e.CreatedAt.Set(now),
+		e.UpdatedAt.Set(now),
+	)
+	if err != nil {
+		return &entities.UserRole{}, fmt.Errorf("multierr.Combine: %w", err)
+	}
+	_, err = db.Exec(ctx, query, values...)
+	if err != nil {
+		return &entities.UserRole{}, fmt.Errorf("db.Exec: %w", err)
+	}
+	return e, nil
+}

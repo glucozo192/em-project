@@ -1,0 +1,20 @@
+syntax = "proto3";
+package pb;
+
+//import "google/protobuf/timestamp.proto";
+//import "common.proto";
+import "user.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/glu/shopvui/pkg/pb";
+
+
+service UserService {
+    // for user login
+    rpc Login (LoginRequest) returns (LoginResponse){
+        option (google.api.http) = {
+            post: "/v1/user/login"
+            body: "*"
+        };
+    }
+}

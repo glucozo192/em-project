@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -10,10 +11,74 @@ import (
 	"github.com/glu/shopvui/internal/entities"
 	"github.com/glu/shopvui/internal/golibs/database"
 	"github.com/glu/shopvui/internal/models"
+	"github.com/glu/shopvui/internal/repositories"
+	"github.com/glu/shopvui/pkg/pb"
+	"github.com/glu/shopvui/token"
 	"github.com/glu/shopvui/util"
 	"github.com/google/uuid"
+	"github.com/jackc/pgtype"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
+type UserService struct {
+	config util.Config
+	pb.UnimplementedUserServiceServer
+	DB database.Ext
+
+	UserRepo interface {
+		GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error)
+		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
+		AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
+		GetRole(ctx context.Context, db database.Ext, roleName pgtype.Text) (*entities.Role, error)
+		UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error)
+	}
+}
+
+func NewUserService(config util.Config, db database.Ext) pb.UserServiceServer {
+	return &UserService{
+		config:   config,
+		DB:       db,
+		UserRepo: new(repositories.UserRepo),
+	}
+}
+
+// gRPC service
+func (u *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+
+	user, err := u.UserRepo.GetUser(ctx, u.DB, database.Text(req.GetEmail()))
+	if err != nil {
+		return nil, err
+	}
+	err = util.CheckPassword(req.Password, user.Password.String)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenMaker, err := token.NewPasetoMaker(u.config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
+
+	accessToken, _, err := tokenMaker.CreateToken(
+		user.ID.String,
+		u.config.AccessTokenDuration,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create access token: %w", err)
+	}
+	return &pb.LoginResponse{
+		User: &pb.User{
+			Id:         user.ID.String,
+			Email:      user.Email.String,
+			FirstName:  user.FirstName.String,
+			LastName:   user.LastName.String,
+			CreateDate: timestamppb.New(user.InsertedAt.Time),
+		},
+		AccessToken: accessToken,
+	}, nil
+}
+
+// RestFul api service
 func (s *Server) loginUser(ctx *gin.Context) {
 	var req models.LoginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {

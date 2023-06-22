@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/glu/shopvui/internal/entities"
-	"github.com/glu/shopvui/internal/golibs/database"
+	"github.com/glu/shopvui/internal/userm/entities"
+	"github.com/glu/shopvui/internal/userm/golibs/database"
 	"github.com/glu/shopvui/mocks/testutil"
 	"github.com/glu/shopvui/util"
 	"github.com/google/uuid"
@@ -42,7 +42,4 @@ func createRandomUser(t *testing.T) entities.User {
 	require.NotZero(t, user.InsertedAt)
 
 	return *user
-}
-func TestCreateUser(t *testing.T) {
-	createRandomUser(t)
 }

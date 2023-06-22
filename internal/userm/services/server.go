@@ -5,9 +5,10 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/glu/shopvui/internal/entities"
-	"github.com/glu/shopvui/internal/golibs/database"
-	"github.com/glu/shopvui/internal/repositories"
+	"github.com/glu/shopvui/internal/userm/entities"
+	"github.com/glu/shopvui/internal/userm/golibs/database"
+	"github.com/glu/shopvui/internal/userm/repositories"
+
 	"github.com/glu/shopvui/token"
 	"github.com/glu/shopvui/util"
 	"github.com/jackc/pgtype"

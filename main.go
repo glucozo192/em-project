@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/glu/shopvui/internal/services"
+	"github.com/glu/shopvui/internal/userm/services"
 	"github.com/glu/shopvui/pkg/pb"
 	"github.com/glu/shopvui/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"

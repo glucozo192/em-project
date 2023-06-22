@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/glu/shopvui/internal/entities"
-	"github.com/glu/shopvui/internal/golibs/database"
+	"github.com/glu/shopvui/internal/userm/entities"
+	"github.com/glu/shopvui/internal/userm/golibs/database"
 	"github.com/jackc/pgtype"
 	"go.uber.org/multierr"
 )

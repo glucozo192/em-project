@@ -34,6 +34,11 @@ proto:
 	--grpc-gateway_out=pkg/pb --grpc-gateway_opt=paths=source_relative \
     proto/*.proto
 
+gen-product-proto:
+	protoc --proto_path=proto/product --go_out=pkg/pb/product --go_opt=paths=source_relative \
+    --go-grpc_out=pkg/pb/product --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=pkg/pb/product --grpc-gateway_opt=paths=source_relative \
+    proto/product/*.proto
 evans:
 	evans --host localhost --port 9091 -r repl
 

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/glu/shopvui/pkg/pb/product";
+
+message Product {
+    string id = 1;
+    string sku = 2;
+    string name = 3;
+    string description = 4;
+    string product_status_id = 5;
+    int32 regular_price = 6;
+    int32 discount_price = 7;
+    int32 quantity = 8;
+    bool taxable = 9;
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
+
+}
+
+message InsertProductRequest {
+    Product product = 1;
+}
+message InsertProductResponse {
+    Product product = 1;
+}
+
+service ProductService {
+    rpc InsertProudct (InsertProductRequest) returns ( InsertProductResponse);
+}

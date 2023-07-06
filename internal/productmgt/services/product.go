@@ -10,11 +10,12 @@ type ProductService struct {
 	config util.Config
 	product.UnimplementedProductServiceServer
 	DB database.Ext
+
+	ProductRepo interface{}
 }
 
-func NewProductService(config util.Config, db database.Ext) product.ProductServiceServer {
+func NewProductService(db database.Ext) product.ProductServiceServer {
 	return &ProductService{
-		config: config,
-		DB:     db,
+		DB: db,
 	}
 }

@@ -26,7 +26,7 @@ sqlc:
 	sqlc generate
 
 server:
-	go run main.go
+	go run ./cmd/.
 
 proto:
 	protoc --proto_path=proto --go_out=pkg/pb --go_opt=paths=source_relative \

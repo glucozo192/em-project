@@ -28,6 +28,19 @@ message InsertProductResponse {
     Product product = 1;
 }
 
+message ListProductsRequest{
+    string product_id = 1;
+}
+
+message ListProductsResponse{
+    Product product = 1;
+}
+
 service ProductService {
+<<<<<<< HEAD
     rpc InsertProduct (InsertProductRequest) returns ( InsertProductResponse);
+=======
+    rpc InsertProudct (InsertProductRequest) returns ( InsertProductResponse);
+    rpc ListProducts (ListProductsRequest) returns ( ListProductsResponse);
+>>>>>>> 8a593e2c08bbb53d539673fb920877260005ee0e
 }

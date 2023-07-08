@@ -29,5 +29,5 @@ message InsertProductResponse {
 }
 
 service ProductService {
-    rpc InsertProudct (InsertProductRequest) returns ( InsertProductResponse);
+    rpc InsertProduct (InsertProductRequest) returns ( InsertProductResponse);
 }

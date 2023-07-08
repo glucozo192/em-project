@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ProductService_InsertProudct_FullMethodName = "/pb.ProductService/InsertProudct"
+	ProductService_InsertProduct_FullMethodName = "/pb.ProductService/InsertProduct"
 )
 
 // ProductServiceClient is the client API for ProductService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductServiceClient interface {
-	InsertProudct(ctx context.Context, in *InsertProductRequest, opts ...grpc.CallOption) (*InsertProductResponse, error)
+	InsertProduct(ctx context.Context, in *InsertProductRequest, opts ...grpc.CallOption) (*InsertProductResponse, error)
 }
 
 type productServiceClient struct {
@@ -37,9 +37,9 @@ func NewProductServiceClient(cc grpc.ClientConnInterface) ProductServiceClient {
 	return &productServiceClient{cc}
 }
 
-func (c *productServiceClient) InsertProudct(ctx context.Context, in *InsertProductRequest, opts ...grpc.CallOption) (*InsertProductResponse, error) {
+func (c *productServiceClient) InsertProduct(ctx context.Context, in *InsertProductRequest, opts ...grpc.CallOption) (*InsertProductResponse, error) {
 	out := new(InsertProductResponse)
-	err := c.cc.Invoke(ctx, ProductService_InsertProudct_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, ProductService_InsertProduct_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *productServiceClient) InsertProudct(ctx context.Context, in *InsertProd
 // All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility
 type ProductServiceServer interface {
-	InsertProudct(context.Context, *InsertProductRequest) (*InsertProductResponse, error)
+	InsertProduct(context.Context, *InsertProductRequest) (*InsertProductResponse, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -58,8 +58,8 @@ type ProductServiceServer interface {
 type UnimplementedProductServiceServer struct {
 }
 
-func (UnimplementedProductServiceServer) InsertProudct(context.Context, *InsertProductRequest) (*InsertProductResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InsertProudct not implemented")
+func (UnimplementedProductServiceServer) InsertProduct(context.Context, *InsertProductRequest) (*InsertProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertProduct not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
 
@@ -74,20 +74,20 @@ func RegisterProductServiceServer(s grpc.ServiceRegistrar, srv ProductServiceSer
 	s.RegisterService(&ProductService_ServiceDesc, srv)
 }
 
-func _ProductService_InsertProudct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ProductService_InsertProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InsertProductRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductServiceServer).InsertProudct(ctx, in)
+		return srv.(ProductServiceServer).InsertProduct(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ProductService_InsertProudct_FullMethodName,
+		FullMethod: ProductService_InsertProduct_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServiceServer).InsertProudct(ctx, req.(*InsertProductRequest))
+		return srv.(ProductServiceServer).InsertProduct(ctx, req.(*InsertProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -100,8 +100,8 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ProductServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "InsertProudct",
-			Handler:    _ProductService_InsertProudct_Handler,
+			MethodName: "InsertProduct",
+			Handler:    _ProductService_InsertProduct_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -3,13 +3,13 @@ package entities
 import "github.com/jackc/pgtype"
 
 type User struct {
-	ID         pgtype.Text        `db:"id"`
+	ID         pgtype.Text        `db:"user_id"`
 	Email      pgtype.Text        `db:"email"`
 	Password   pgtype.Text        `db:"password"`
 	LastName   pgtype.Text        `db:"last_name"`
 	FirstName  pgtype.Text        `db:"first_name"`
 	Active     pgtype.Bool        `db:"active"`
-	InsertedAt pgtype.Timestamptz `db:"inserted_at"`
+	InsertedAt pgtype.Timestamptz `db:"created_at"`
 	UpdatedAt  pgtype.Timestamptz `db:"updated_at"`
 }
 

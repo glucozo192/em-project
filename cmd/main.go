@@ -32,6 +32,7 @@ func main() {
 		log.Fatal().Err(err).Msg("cannot connect to db:")
 	}
 	go runProductServer(srv.config, srv.conn)
+	go runRestful(srv.config, srv.conn)
 	runUserServer(srv.config, srv.conn)
 }
 func runUserServer(config util.Config, conn *pgx.Conn) {
@@ -71,5 +72,17 @@ func runProductServer(config util.Config, conn *pgx.Conn) {
 	err = grpcServer.Serve(listener)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot start gRPC server:")
+	}
+}
+
+func runRestful(config util.Config, conn *pgx.Conn) {
+	server, err := userService.NewServer(config, conn)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create server:")
+	}
+
+	err = server.Start(config.HTTPServerAddress)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot start server:")
 	}
 }

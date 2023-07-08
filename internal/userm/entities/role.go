@@ -3,9 +3,9 @@ package entities
 import "github.com/jackc/pgtype"
 
 type Role struct {
-	ID         pgtype.Text        `db:"id"`
+	ID         pgtype.Text        `db:"role_id"`
 	Name       pgtype.Text        `db:"name"`
-	InsertedAt pgtype.Timestamptz `db:"inserted_at"`
+	InsertedAt pgtype.Timestamptz `db:"created_at"`
 	UpdatedAt  pgtype.Timestamptz `db:"updated_at"`
 }
 

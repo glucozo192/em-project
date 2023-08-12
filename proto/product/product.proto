@@ -36,11 +36,22 @@ message ListProductsResponse{
     Product product = 1;
 }
 
+message ListAllProductsRequest{}
+message ListAllProductsResponse{
+    repeated Product products = 1;
+}
+
+message DeleteProductRequest{
+    string id = 1;
+}
+message DeleteProductResponse{
+    string message = 1;
+}
+
+
 service ProductService {
-<<<<<<< HEAD
     rpc InsertProduct (InsertProductRequest) returns ( InsertProductResponse);
-=======
-    rpc InsertProudct (InsertProductRequest) returns ( InsertProductResponse);
     rpc ListProducts (ListProductsRequest) returns ( ListProductsResponse);
->>>>>>> 8a593e2c08bbb53d539673fb920877260005ee0e
+    rpc ListAllProducts (ListAllProductsRequest) returns ( ListAllProductsResponse);
+    rpc DeleteProduct (DeleteProductRequest) returns ( DeleteProductResponse);
 }

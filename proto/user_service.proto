@@ -17,4 +17,6 @@ service UserService {
             body: "*"
         };
     }
+
+    rpc Register(RegisterRequest) returns (RegisterResponse);
 }

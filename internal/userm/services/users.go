@@ -78,6 +78,73 @@ func (u *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 	}, nil
 }
 
+func validateRegisterRequest(req *pb.RegisterRequest) error {
+	if req.Email == "" {
+		return fmt.Errorf("email is required")
+	}
+	if req.Password == "" {
+		return fmt.Errorf("password is required")
+	}
+	return nil
+}
+
+func toGrpcUser(req *pb.RegisterRequest) (*entities.User, error) {
+	hashPassword, err := util.HashPassword(req.Password)
+	if err != nil {
+		return &entities.User{}, err
+	}
+	return &entities.User{
+		ID:        database.Text(uuid.NewString()),
+		Email:     database.Text(req.Email),
+		FirstName: database.Text(req.FirstName),
+		LastName:  database.Text(req.LastName),
+		Password:  database.Text(hashPassword),
+	}, nil
+}
+func (u *UserService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+
+	if err := validateRegisterRequest(req); err != nil {
+		return nil, err
+	}
+	_, err := u.UserRepo.GetUser(ctx, u.DB, database.Text(req.GetEmail()))
+	if err == nil {
+		return nil, fmt.Errorf("user already exists")
+	}
+
+	ur, err := toGrpcUser(req)
+	if err != nil {
+		return nil, err
+	}
+	user, err := u.UserRepo.CreateUser(ctx, u.DB, ur)
+	if err != nil {
+		return nil, fmt.Errorf("can't create user: %v", err)
+	}
+
+	tokenMaker, err := token.NewPasetoMaker(u.config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
+
+	accessToken, _, err := tokenMaker.CreateToken(
+		user.ID.String,
+		u.config.AccessTokenDuration,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create access token: %w", err)
+	}
+
+	return &pb.RegisterResponse{
+		User: &pb.User{
+			Id:         user.ID.String,
+			Email:      user.Email.String,
+			FirstName:  user.FirstName.String,
+			LastName:   user.LastName.String,
+			CreateDate: timestamppb.New(user.InsertedAt.Time),
+		},
+		AccessToken: accessToken,
+	}, nil
+}
+
 // RestFul api service
 func (s *Server) loginUser(ctx *gin.Context) {
 	var req models.LoginUserRequest

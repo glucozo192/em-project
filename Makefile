@@ -32,7 +32,7 @@ proto:
 	protoc --proto_path=proto --go_out=pkg/pb --go_opt=paths=source_relative \
     --go-grpc_out=pkg/pb --go-grpc_opt=paths=source_relative \
 	--grpc-gateway_out=pkg/pb --grpc-gateway_opt=paths=source_relative \
-    proto/**/*.proto
+    proto/*.proto
 
 gen-product-proto:
 	protoc --proto_path=proto/product --go_out=pkg/pb/product --go_opt=paths=source_relative \

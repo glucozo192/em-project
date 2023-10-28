@@ -30,6 +30,7 @@ type UserService struct {
 		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
 		AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
 		GetRole(ctx context.Context, db database.Ext, roleName pgtype.Text) (*entities.Role, error)
+		GetUserByID(ctx context.Context, db database.Ext, userID pgtype.Text) (*entities.User, error)
 		UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error)
 	}
 }
@@ -142,6 +143,28 @@ func (u *UserService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 			CreateDate: timestamppb.New(user.InsertedAt.Time),
 		},
 		AccessToken: accessToken,
+	}, nil
+}
+
+func (u *UserService) GetMe(ctx context.Context, req *pb.GetMeRequest) (*pb.GetMeResponse, error) {
+	pay, err := u.authorizeUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := u.UserRepo.GetUserByID(ctx, u.DB, database.Text(pay.UserID))
+	if err != nil {
+		return nil, fmt.Errorf("GetUser: %v", err)
+	}
+
+	return &pb.GetMeResponse{
+		User: &pb.User{
+			Id:         user.ID.String,
+			Email:      user.Email.String,
+			FirstName:  user.FirstName.String,
+			LastName:   user.LastName.String,
+			CreateDate: timestamppb.New(user.InsertedAt.Time),
+		},
 	}, nil
 }
 

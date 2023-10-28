@@ -29,6 +29,17 @@ func (r *UserRepo) GetUser(ctx context.Context, db database.Ext, email pgtype.Te
 	return e, nil
 }
 
+func (r *UserRepo) GetUserByID(ctx context.Context, db database.Ext, userID pgtype.Text) (*entities.User, error) {
+	e := &entities.User{}
+	fields, values := database.FieldMap(e)
+	query := fmt.Sprintf(`select %s from %s where user_id = $1`, strings.Join(fields, ","), "users")
+	err := db.QueryRow(ctx, query, userID).Scan(values...)
+	if err != nil {
+		return nil, fmt.Errorf("GetUserByID: db.QueryRow.Scan: %w", err)
+	}
+	return e, nil
+}
+
 func (r *UserRepo) CreateUser(ctx context.Context, db database.Ext, e *entities.User) (*entities.User, error) {
 	fieldNames, values := database.FieldMap(e)
 	placeHolders := database.GeneratePlaceholders(len(fieldNames))
@@ -40,7 +51,7 @@ func (r *UserRepo) CreateUser(ctx context.Context, db database.Ext, e *entities.
             password = excluded.password,
 			updated_at = excluded.updated_at
 		`, strings.Join(fieldNames, ", "), placeHolders)
-	//fmt.Println(query)
+
 	now := time.Now()
 	err := multierr.Combine(
 		e.InsertedAt.Set(now),

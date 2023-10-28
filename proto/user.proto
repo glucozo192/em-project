@@ -29,3 +29,10 @@ message RegisterResponse {
     User user = 1;
     string access_token = 2;
 }
+
+message GetMeRequest {
+}
+
+message GetMeResponse {
+    User user = 1;
+}

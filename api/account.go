@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -60,12 +59,14 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		return
 	}
 
-	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	if account.Owner != authPayload.Username {
-		err := errors.New("account doesn't belong to the authenticated user")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
+	//TODO: authentication
+
+	//authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	// if account.Owner != authPayload.Username {
+	// 	err := errors.New("account doesn't belong to the authenticated user")
+	// 	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	// 	return
+	// }
 
 	ctx.JSON(http.StatusOK, account)
 }
@@ -84,7 +85,7 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.ListAccountsParams{
-		Owner:  authPayload.Username,
+		Owner:  authPayload.UserID,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}

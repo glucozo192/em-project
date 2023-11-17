@@ -6,4 +6,3 @@ alter table user_roles drop constraint fk_users_user_roles ;
 drop table users;
 drop table roles;
 drop table user_roles;
-drop table products;

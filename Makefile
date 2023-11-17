@@ -59,3 +59,6 @@ gen-sql:
 
 migrate:
 	docker-compose -f ${COMPOSE_FILE} up migrate
+
+user-migrate:
+	docker-compose -f ${COMPOSE_FILE} up user_migrate

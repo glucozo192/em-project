@@ -72,6 +72,16 @@ services:
       - postgres
     command: ["-path", "/migrations", "-database", "${DATABASE_URL}", "up"]
 
+  user_migrate:
+    image: migrate/migrate
+    env_file:
+      - ./.env
+    volumes:
+      - "../database/postgres/migrations/users:/migrations/"
+    networks:
+      - postgres
+    command: ["-path", "/migrations", "-database", "${DATABASE_URL}", "up"]
+
   adminer:
     image: adminer
     restart: always

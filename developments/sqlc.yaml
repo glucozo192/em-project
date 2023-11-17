@@ -1,12 +1,12 @@
 version: "2"
 sql:
   - engine: "postgresql"
-    queries: "/src/queries"
-    schema: "/src/migrations"
+    queries: "/src/queries/users"
+    schema: "/src/migrations/users"
     gen:
       go:
         package: "models"
-        out: "/app/internal/models"
+        out: "/app/internal/userm/models"
         sql_package: "pgx/v5"
         emit_json_tags: true
         emit_interface: true

@@ -1,3 +1,8 @@
+COMPOSE_FILE := ./developments/docker-compose.yml
+
+build:
+	GOOS=linux GOARCH=amd64 go build -o app-exe
+
 postgres:
 	docker run --name postgres2 -p 5431:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=6677028a -d postgres
 
@@ -42,4 +47,12 @@ gen-product-proto:
 evans:
 	evans --host localhost --port 9091 -r repl
 
-.PHONY: createdb dropdb postgres migrate-up migrate-down sqlc server migrate-up1 migrate-down1 proto start-db evans
+
+gen-proto:
+	docker-compose -f ${COMPOSE_FILE} up generate_pb_go --build
+
+start-postgres:
+	docker compose -f ${COMPOSE_FILE} up postgres -d
+
+adminer:
+	docker compose -f ${COMPOSE_FILE} up adminer -d

@@ -1,12 +1,9 @@
 syntax = "proto3";
 
 package pb;
+option go_package = "pb/;pb";
 
-//import "google/protobuf/timestamp.proto";
 import "common.proto";
-
-option go_package = "github.com/glu/shopvui/pkg/pb";
-
 
 message LoginRequest {
     string email = 1;

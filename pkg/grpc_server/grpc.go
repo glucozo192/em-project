@@ -3,67 +3,46 @@ package grpc_server
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 
-	//"github.com/duyledat197/go-gen-tools/config"
-
-	"github.com/glu/shopvui/util"
-
-	//"github.com/duyledat197/go-gen-tools/pkg/registry"
-	//"github.com/duyledat197/go-gen-tools/pkg/tracing"
+	"github.com/glu/shopvui/configs"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
-	"go.uber.org/zap"
+	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"google.golang.org/grpc"
 )
 
 type GrpcServer struct {
-	ServiceName string
-	//Consul         *registry.ConsulRegister
-	//Tracer         *tracing.TracerClient
-	AuthFunction   grpc_auth.AuthFunc
-	server         *grpc.Server
-	Logger         *zap.Logger
-	Address        util.Config
-	MaxMessageSize int //* default = 0 mean 4MB
-	Handlers       func(ctx context.Context, server *grpc.Server) error
-
-	OtherOptions []grpc.ServerOption
+	endpoint configs.Endpoint
+	Server   *grpc.Server
 }
 
-func (s *GrpcServer) Init(ctx context.Context) error {
-	var (
-		streamInterceptors []grpc.StreamServerInterceptor
-		unaryInterceptors  []grpc.UnaryServerInterceptor
-		opts               []grpc.ServerOption
-	)
-
-	opts = append(opts,
+func NewGrpcServer(endpoint configs.Endpoint) *GrpcServer {
+	srv := grpc.NewServer(
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-			streamInterceptors...,
+			grpc_validator.StreamServerInterceptor(),
 		)),
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			unaryInterceptors...,
-		)))
-	opts = append(opts, s.OtherOptions...)
-	s.server = grpc.NewServer(
-		opts...,
 	)
-	s.Handlers(ctx, s.server)
-	return nil
+	return &GrpcServer{
+		endpoint: endpoint,
+		Server:   srv,
+	}
 }
 
 func (s *GrpcServer) Start(ctx context.Context) error {
-	_, err := net.Listen("tcp", fmt.Sprintf(":%s", s.Address.GRPCServerAddress))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", s.endpoint.Port))
 	if err != nil {
 		return err
 	}
-
+	log.Printf("Server listening in port: %d\n", s.endpoint.Port)
+	if err := s.Server.Serve(lis); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (s *GrpcServer) Stop(ctx context.Context) error {
-	s.server.GracefulStop()
+	s.Server.GracefulStop()
 	return nil
 }

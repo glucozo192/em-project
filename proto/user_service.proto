@@ -1,13 +1,9 @@
 syntax = "proto3";
 package pb;
+option go_package = "pb/;pb";
 
-//import "google/protobuf/timestamp.proto";
-//import "common.proto";
 import "user.proto";
 import "google/api/annotations.proto";
-
-option go_package = "github.com/glu/shopvui/pkg/pb";
-
 
 service UserService {
     // for user login

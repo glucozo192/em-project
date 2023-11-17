@@ -1,10 +1,11 @@
 syntax = "proto3";
 
 package pb;
+option go_package = "pb/;pb";
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/glu/shopvui/pkg/pb";
+//option (transformer.go_protobuf_package) = "pb";
 
 message User {
     string email = 1;

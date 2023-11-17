@@ -1,8 +1,5 @@
 COMPOSE_FILE := ./developments/docker-compose.yml
 
-build:
-	GOOS=linux GOARCH=amd64 go build -o app-exe
-
 postgres:
 	docker run --name postgres2 -p 5431:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=6677028a -d postgres
 
@@ -56,3 +53,9 @@ start-postgres:
 
 adminer:
 	docker compose -f ${COMPOSE_FILE} up adminer -d
+
+gen-sql:
+	docker-compose -f ${COMPOSE_FILE} up generate_sqlc
+
+migrate:
+	docker-compose -f ${COMPOSE_FILE} up migrate

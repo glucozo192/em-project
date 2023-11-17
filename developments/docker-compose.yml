@@ -43,12 +43,12 @@ services:
     image: postgres:13-alpine
     environment:
       PGDATA: /data/postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: shopvui
       DATABASE_HOST: localhost
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: shopvui
     ports:
-      - "5432:5432"
+      - "5431:5432"
     networks:
       - postgres
     restart: unless-stopped

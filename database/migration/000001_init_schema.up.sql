@@ -11,6 +11,7 @@ create table users (
   constraint pk_users primary key (user_id),
   constraint email_unique UNIQUE (email)
 );
+
 create table roles (
   role_id text not null,
   name varchar(255) not null,
@@ -18,6 +19,7 @@ create table roles (
   updated_at timestamp with time zone not null,
   constraint pk_roles primary key (role_id)
 );
+
 create table user_roles (
   user_id text not null,
   role_id text not null,

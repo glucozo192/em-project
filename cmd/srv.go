@@ -3,6 +3,8 @@ package cmd
 import (
 	"context"
 
+	"github.com/glu/shopvui/idl/pb"
+	deliveries "github.com/glu/shopvui/internal/userm/deliveries/grpc"
 	postgres_client "github.com/glu/shopvui/pkg/postgres"
 
 	"github.com/glu/shopvui/configs"
@@ -34,10 +36,13 @@ type server struct {
 
 	// // services
 	// productSrv product.ProductServiceServer
-	// userSrv    pb.UserServiceServer
+	userService    pb.UserServiceServer
 
 	// config
 	config utils.Config
+
+	// deliveries
+	userDelivery            pb.UserServiceServer
 
 	// database clients
 	postgresClient *postgres_client.PostgresClient
@@ -74,54 +79,18 @@ func (s *server) LoadConfig(ctx context.Context) error {
 	return nil
 }
 
-func (s *server) loadDatabase(ctx context.Context) error {
-	var err error
-	s.conn, err = pgx.Connect(ctx, s.config.DBSource)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s *server) loadServices(ctx context.Context) error {
-	//s.productSrv = productSrv.NewProductService()
-	// s.userSrv = userSrv.NewUserService(s.config, s.conn)
-	// s.productSrv = productSrv.NewProductService(s.conn)
-	return nil
-}
-func (s *server) loadRepositories(ctx context.Context) error {
-	//s.productSrv = productSrv.NewProductService()
-	// s.userSrv = userSrv.NewUserService(s.config, s.conn)
-	// s.productSrv = productSrv.NewProductService(s.conn)
-	return nil
-}
 
 func (s *server) loadDeliveries(ctx context.Context) error {
-	//s.productSrv = productSrv.NewProductService()
-	// s.userSrv = userSrv.NewUserService(s.config, s.conn)
+	s.userDelivery = deliveries.NewUserDelivery(s.userService)
 	// s.productSrv = productSrv.NewProductService(s.conn)
 	return nil
 }
-
-func loadServer(ctx context.Context) error {
-	return nil
-}
-
 
 
 func (s *server) loadDefault(ctx context.Context) {
-	if err := s.loadRepositories(ctx); err != nil {
-		panic(err)
-	}
-
-	if err := s.loadServices(ctx); err != nil {
-		panic(err)
-	}
-
 	if err := s.loadDeliveries(ctx); err != nil {
 		panic(err)
 	}
-
 }
 
 func (s *server) loadPostgres(ctx context.Context) {

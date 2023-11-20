@@ -98,6 +98,7 @@ func (r *UserRepo) GetRole(ctx context.Context, db database.Ext, roleName pgtype
 	}
 	return e, nil
 }
+
 func (r *UserRepo) UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error) {
 	fields, values := database.FieldMap(e)
 	placeHolders := database.GeneratePlaceholders(len(fields))

@@ -1,46 +1,39 @@
 package services
 
-// import (
-// 	"context"
-// 	"database/sql"
-// 	"fmt"
-// 	"net/http"
+import (
+	"context"
 
-// 	"github.com/gin-gonic/gin"
-// 	"github.com/glu/shopvui/idl/pb"
-// 	"github.com/glu/shopvui/internal/userm/constants"
-// 	"github.com/glu/shopvui/internal/userm/entities"
-// 	"github.com/glu/shopvui/internal/userm/golibs/database"
-// 	"github.com/glu/shopvui/internal/userm/models"
-// 	"github.com/glu/shopvui/internal/userm/repositories"
-// 	"github.com/glu/shopvui/utils"
-// 	"github.com/google/uuid"
-// 	"github.com/jackc/pgtype"
-// 	"google.golang.org/protobuf/types/known/timestamppb"
-// )
+	"github.com/glu/shopvui/idl/pb"
+	"github.com/glu/shopvui/internal/userm/entities"
+	"github.com/glu/shopvui/internal/userm/golibs/database"
+	"github.com/glu/shopvui/internal/userm/repositories"
+	"github.com/jackc/pgtype"
+)
 
-// type UserService struct {
-// 	config utils.Config
-// 	pb.UnimplementedUserServiceServer
-// 	DB database.Ext
+type UserService interface {
+	Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error)
+}
+type userService struct {
+	DB database.Ext
+	UserRepo interface {
+		GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error)
+		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
+		AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
+		GetRole(ctx context.Context, db database.Ext, roleName pgtype.Text) (*entities.Role, error)
+		GetUserByID(ctx context.Context, db database.Ext, userID pgtype.Text) (*entities.User, error)
+		UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error)
+	}
+}
 
-// 	UserRepo interface {
-// 		GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error)
-// 		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
-// 		AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
-// 		GetRole(ctx context.Context, db database.Ext, roleName pgtype.Text) (*entities.Role, error)
-// 		GetUserByID(ctx context.Context, db database.Ext, userID pgtype.Text) (*entities.User, error)
-// 		UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error)
-// 	}
-// }
-
-// func NewUserService(config utils.Config, db database.Ext) pb.UserServiceServer {
-// 	return &UserService{
-// 		config:   config,
-// 		DB:       db,
-// 		UserRepo: new(repositories.UserRepo),
-// 	}
-// }
+func NewUserService() UserService {
+	return &userService{
+		UserRepo: new(repositories.UserRepo),
+	}
+}
+func (u *userService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+	// unimplemented
+	return &pb.LoginResponse{}, nil
+}
 
 // // gRPC service
 // // func (u *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {

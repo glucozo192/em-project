@@ -3,18 +3,20 @@ package services
 import (
 	"context"
 
-	"github.com/glu/shopvui/idl/pb"
 	"github.com/glu/shopvui/internal/userm/entities"
 	"github.com/glu/shopvui/internal/userm/golibs/database"
+	"github.com/glu/shopvui/internal/userm/models"
 	"github.com/glu/shopvui/internal/userm/repositories"
+	"github.com/glu/shopvui/utils"
 	"github.com/jackc/pgtype"
 )
 
 type UserService interface {
-	Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error)
+	Login(ctx context.Context, req *models.LoginRequest) (*models.LoginResponse, error)
 }
 type userService struct {
-	DB database.Ext
+	DB       database.Ext
+	MDB      models.DBTX
 	UserRepo interface {
 		GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error)
 		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
@@ -23,53 +25,36 @@ type userService struct {
 		GetUserByID(ctx context.Context, db database.Ext, userID pgtype.Text) (*entities.User, error)
 		UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error)
 	}
-}
-
-func NewUserService() UserService {
-	return &userService{
-		UserRepo: new(repositories.UserRepo),
+	UserRepository interface {
+		GetByEmail(ctx context.Context, db models.DBTX, email string) (*models.User, error)
 	}
 }
-func (u *userService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
-	// unimplemented
-	return &pb.LoginResponse{}, nil
+
+func NewUserService(db database.Ext, mdb models.DBTX) UserService {
+	return &userService{
+		DB:             db,
+		MDB:            mdb,
+		UserRepo:       new(repositories.UserRepo),
+		UserRepository: new(repositories.UserRepository),
+	}
 }
 
-// // gRPC service
-// // func (u *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
+// gRPC service
+func (u *userService) Login(ctx context.Context, req *models.LoginRequest) (*models.LoginResponse, error) {
 
-// // 	user, err := u.UserRepo.GetUser(ctx, u.DB, database.Text(req.GetEmail()))
-// // 	if err != nil {
-// // 		return nil, err
-// // 	}
-// // 	err = utils.CheckPassword(req.Password, user.Password.String)
-// // 	if err != nil {
-// // 		return nil, err
-// // 	}
+	user, err := u.UserRepository.GetByEmail(ctx, u.MDB, req.Email)
+	if err != nil {
+		return nil, err
+	}
+	err = utils.CheckPassword(req.Password, user.Password)
+	if err != nil {
+		return nil, err
+	}
 
-// // 	authenticateMaker, err := authenticate.NewPasetoMaker(u.config.authenticateSymmetricKey)
-// // 	if err != nil {
-// // 		return nil, fmt.Errorf("cannot create authenticate maker: %w", err)
-// // 	}
-
-// // 	accessauthenticate, _, err := authenticateMaker.Createauthenticate(
-// // 		user.ID.String,
-// // 		u.config.AccessauthenticateDuration,
-// // 	)
-// // 	if err != nil {
-// // 		return nil, fmt.Errorf("cannot create access authenticate: %w", err)
-// // 	}
-// // 	return &pb.LoginResponse{
-// // 		User: &pb.User{
-// // 			Id:         user.ID.String,
-// // 			Email:      user.Email.String,
-// // 			FirstName:  user.FirstName.String,
-// // 			LastName:   user.LastName.String,
-// // 			CreateDate: timestamppb.New(user.InsertedAt.Time),
-// // 		},
-// // 		Accessauthenticate: accessauthenticate,
-// // 	}, nil
-// // }
+	return &models.LoginResponse{
+		User: *user,
+	}, nil
+}
 
 // // func validateRegisterRequest(req *pb.RegisterRequest) error {
 // // 	if req.Email == "" {

@@ -119,3 +119,13 @@ func (r *UserRepo) UpdateRole(ctx context.Context, db database.Ext, e *entities.
 	}
 	return e, nil
 }
+
+// func (r *UserRepo) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+// 	q := models.New(r.db)
+// 	result, err := q.GetUserByUsername(ctx, username)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return result, nil
+// }

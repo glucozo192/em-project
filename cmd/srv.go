@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/glu/shopvui/idl/pb"
-	deliveries "github.com/glu/shopvui/internal/userm/deliveries/grpc"
 	postgres_client "github.com/glu/shopvui/pkg/postgres"
 
 	"github.com/glu/shopvui/configs"
@@ -36,18 +35,17 @@ type server struct {
 
 	// // services
 	// productSrv product.ProductServiceServer
-	userService    pb.UserServiceServer
+	userService pb.UserServiceServer
 
 	// config
 	config utils.Config
 
 	// deliveries
-	userDelivery            pb.UserServiceServer
+	userDelivery pb.UserServiceServer
 
 	// database clients
 	postgresClient *postgres_client.PostgresClient
-	conn *pgx.Conn
-	
+	conn           *pgx.Conn
 
 	// processors []processor
 	// factories  []factory
@@ -79,13 +77,11 @@ func (s *server) LoadConfig(ctx context.Context) error {
 	return nil
 }
 
-
 func (s *server) loadDeliveries(ctx context.Context) error {
-	s.userDelivery = deliveries.NewUserDelivery(s.userService)
+	//s.userDelivery = deliveries.NewUserDelivery(s.userService)
 	// s.productSrv = productSrv.NewProductService(s.conn)
 	return nil
 }
-
 
 func (s *server) loadDefault(ctx context.Context) {
 	if err := s.loadDeliveries(ctx); err != nil {
@@ -132,4 +128,3 @@ func stop(ctx context.Context) error {
 	}
 	return nil
 }
-

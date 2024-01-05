@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-
 type userDelivery struct {
 	pb.UnimplementedUserServiceServer
 	userService services.UserService
@@ -27,7 +26,7 @@ func (d *userDelivery) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Log
 		return nil, status.Errorf(codes.InvalidArgument, "the request body data cant be nil!")
 	}
 
-	if _,err := d.userService.Login(ctx, req); err != nil {
+	if _, err := d.userService.Login(ctx, req); err != nil {
 		return nil, status.Errorf(codes.Internal, fmt.Errorf("unable to create user: %v", err).Error())
 	}
 

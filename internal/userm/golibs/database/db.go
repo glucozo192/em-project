@@ -9,7 +9,7 @@ import (
 
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgerrcode"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v5"
 	"github.com/pkg/errors"
 )
 
@@ -39,7 +39,7 @@ type Rows interface {
 
 // queryer is an interface for Query
 type queryer interface {
-	Query(ctx context.Context, query string, args ...interface{}) (pgx.Rows, error)
+	Query(ctx context.Context, query string, args ...any) (pgx.Rows, error)
 	QueryRow(ctx context.Context, query string, args ...interface{}) pgx.Row
 }
 

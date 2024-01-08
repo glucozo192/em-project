@@ -60,13 +60,13 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| created_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| updated_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
 | email | [string](#string) |  |  |
-| id | [string](#string) |  |  |
+| user_id | [string](#string) |  |  |
 | first_name | [string](#string) |  |  |
 | last_name | [string](#string) |  |  |
-| create_date | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
-| update_date | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
-| password_change_at | [google.protobuf.Timestamp](#google-protobuf-Timestamp) |  |  |
+| password | [string](#string) |  |  |
 
 
 
@@ -323,10 +323,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| email | [string](#string) |  |  |
-| password | [string](#string) |  |  |
-| first_name | [string](#string) |  |  |
-| last_name | [string](#string) |  |  |
+| user | [User](#pb-User) |  |  |
 
 
 

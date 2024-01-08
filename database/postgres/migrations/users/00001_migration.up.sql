@@ -8,6 +8,7 @@ create table users (
   active bool default true,
   created_at timestamp with time zone not null,
   updated_at timestamp with time zone not null,
+  deleted_at timestamp with time zone,
   constraint pk_users primary key (user_id),
   constraint email_unique UNIQUE (email)
 );
@@ -17,6 +18,7 @@ create table roles (
   name varchar(255) not null,
   created_at timestamp with time zone not null,
   updated_at timestamp with time zone not null,
+  deleted_at timestamp with time zone,
   constraint pk_roles primary key (role_id)
 );
 
@@ -25,11 +27,11 @@ create table user_roles (
   role_id text not null,
   created_at timestamp with time zone not null,
   updated_at timestamp with time zone not null,
+  deleted_at timestamp with time zone,
   constraint pk_user_roles primary key (user_id, role_id)
 );
 
 
--- get_associations_create
 alter table user_roles
 add constraint fk_roles_user_roles foreign key (role_id) references roles (role_id);
 alter table user_roles

@@ -9,6 +9,8 @@ import (
 	"github.com/glu/shopvui/internal/userm/entities"
 	"github.com/glu/shopvui/internal/userm/golibs/database"
 	"github.com/jackc/pgtype"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgxutil"
 	"go.uber.org/multierr"
 )
 
@@ -30,14 +32,21 @@ func (r *UserRepo) GetUser(ctx context.Context, db database.Ext, email pgtype.Te
 }
 
 func (r *UserRepo) GetUserByID(ctx context.Context, db database.Ext, userID pgtype.Text) (*entities.User, error) {
-	e := &entities.User{}
-	fields, values := database.FieldMap(e)
-	query := fmt.Sprintf(`select %s from %s where user_id = $1`, strings.Join(fields, ","), "users")
-	err := db.QueryRow(ctx, query, userID).Scan(values...)
+	//e := &entities.User{}
+	//fields, values := database.FieldMap(e)
+	query := fmt.Sprintf(`select * from %s where user_id = $1`, "users")
+	//err := db.QueryRow(ctx, query, userID).Scan(values...)
+
+	// rows, err := dbpool.Query(ctx, "SELECT * FROM accounts")
+	// if err != nil {
+	// 	exit("failed query", err)
+	// }
+
+	user, err := pgxutil.SelectRow(ctx, db, query, []any{userID}, pgx.RowToAddrOfStructByPos[entities.User])
 	if err != nil {
 		return nil, fmt.Errorf("GetUserByID: db.QueryRow.Scan: %w", err)
 	}
-	return e, nil
+	return user, nil
 }
 
 func (r *UserRepo) CreateUser(ctx context.Context, db database.Ext, e *entities.User) (*entities.User, error) {

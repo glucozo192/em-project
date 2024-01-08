@@ -3,7 +3,10 @@ package cmd
 import (
 	"context"
 	"log"
+	"os"
 
+	"github.com/glu/shopvui/idl/pb"
+	"github.com/glu/shopvui/pkg/grpc_server"
 	"github.com/spf13/cobra"
 )
 
@@ -23,11 +26,18 @@ to quickly create a Cobra application.`,
 
 		errChan := make(chan error)
 		start(ctx, errChan)
-		err := <-errChan
-		log.Printf("Server have an error: %v, server stop now\n", err.Error())
-		if err := stop(ctx); err != nil {
-			panic(err)
-		}
+		go func() {
+			select {
+			case <-ctx.Done():
+				log.Printf("Server initialization be canceled")
+				os.Exit(1)
+			case err := <-errChan:
+				log.Printf("Server have an error: %v, server stop now\n", err.Error())
+				if err := stop(ctx); err != nil {
+					panic(err)
+				}
+			}
+		}()
 	},
 }
 
@@ -52,8 +62,13 @@ func loadUser(ctx context.Context) {
 		panic(err)
 	}
 
-	srv.loadDefault(ctx)
+	srv.loadUserServices(ctx)
+
+	srv.userServer = grpc_server.NewGrpcServer(srv.cfg.UserServiceEndpoint)
+	pb.RegisterUserServiceServer(srv.userServer.Server, srv.userService)
+
 	// srv.userServer = grpc_server.NewGrpcServer(srv.cfg.UserlServiceEndpoint)
-	// srv.processors = append(srv.processors, srv.userServer)
+
+	srv.processors = append(srv.processors, srv.userServer)
 	srv.factories = append(srv.factories, srv.postgresClient)
 }

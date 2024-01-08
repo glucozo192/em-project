@@ -95,10 +95,18 @@
     "pbUser": {
       "type": "object",
       "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
         "email": {
           "type": "string"
         },
-        "id": {
+        "userId": {
           "type": "string"
         },
         "firstName": {
@@ -107,17 +115,8 @@
         "lastName": {
           "type": "string"
         },
-        "createDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updateDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "passwordChangeAt": {
-          "type": "string",
-          "format": "date-time"
+        "password": {
+          "type": "string"
         }
       }
     },

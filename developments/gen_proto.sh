@@ -6,6 +6,7 @@ PROTO_OUT=./idl/pb
 IDL_PATH=./idl
 DOC_OUT=./docs
 
+
 rm -rf ${PROTO_OUT}
 rm transform/*_transformer.go
 

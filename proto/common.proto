@@ -12,11 +12,11 @@ option (transformer.go_models_file_path) = "internal/userm/models/models.go";
 
 message User {
     option (transformer.go_struct) = "User";
-    string email = 1;
-    string id = 2;
-    string first_name = 3;
-    string last_name = 4;
-    google.protobuf.Timestamp create_date = 5;
-    google.protobuf.Timestamp update_date = 6;
-    google.protobuf.Timestamp password_change_at = 7;
+    google.protobuf.Timestamp created_at = 1;
+    google.protobuf.Timestamp updated_at = 2;
+    string email = 3;
+    string user_id = 4;
+    string first_name = 5;
+    string last_name = 6;
+    string password = 7;
 }

@@ -2,47 +2,40 @@ package services
 
 import (
 	"context"
+	"fmt"
+	"time"
 
-	"github.com/glu/shopvui/internal/userm/entities"
-	"github.com/glu/shopvui/internal/userm/golibs/database"
+	"github.com/glu/shopvui/idl/pb"
 	"github.com/glu/shopvui/internal/userm/models"
 	"github.com/glu/shopvui/internal/userm/repositories"
+	"github.com/glu/shopvui/transform"
 	"github.com/glu/shopvui/utils"
-	"github.com/jackc/pgtype"
+	"github.com/glu/shopvui/utils/authenticate"
 )
 
-type UserService interface {
-	Login(ctx context.Context, req *models.LoginRequest) (*models.LoginResponse, error)
-}
 type userService struct {
-	DB       database.Ext
-	MDB      models.DBTX
-	UserRepo interface {
-		GetUser(ctx context.Context, db database.Ext, email pgtype.Text) (*entities.User, error)
-		CreateUser(ctx context.Context, db database.Ext, u *entities.User) (*entities.User, error)
-		AddRoles(ctx context.Context, db database.Ext, roles *entities.Role) error
-		GetRole(ctx context.Context, db database.Ext, roleName pgtype.Text) (*entities.Role, error)
-		GetUserByID(ctx context.Context, db database.Ext, userID pgtype.Text) (*entities.User, error)
-		UpdateRole(ctx context.Context, db database.Ext, e *entities.UserRole) (*entities.UserRole, error)
-	}
+	DB             models.DBTX
 	UserRepository interface {
 		GetByEmail(ctx context.Context, db models.DBTX, email string) (*models.User, error)
+		CreateUserV2(ctx context.Context, db models.DBTX, user *models.User) error
+		Create(ctx context.Context, db models.DBTX, user *models.User) error
 	}
+	authenticator authenticate.Authenticator
+	pb.UnimplementedUserServiceServer
 }
 
-func NewUserService(db database.Ext, mdb models.DBTX) UserService {
+func NewUserService(db models.DBTX, authenticator authenticate.Authenticator) pb.UserServiceServer {
 	return &userService{
 		DB:             db,
-		MDB:            mdb,
-		UserRepo:       new(repositories.UserRepo),
 		UserRepository: new(repositories.UserRepository),
+		authenticator:  authenticator,
 	}
 }
 
 // gRPC service
-func (u *userService) Login(ctx context.Context, req *models.LoginRequest) (*models.LoginResponse, error) {
+func (u *userService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 
-	user, err := u.UserRepository.GetByEmail(ctx, u.MDB, req.Email)
+	user, err := u.UserRepository.GetByEmail(ctx, u.DB, req.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +44,42 @@ func (u *userService) Login(ctx context.Context, req *models.LoginRequest) (*mod
 		return nil, err
 	}
 
-	return &models.LoginResponse{
-		User: *user,
+	return &pb.LoginResponse{}, nil
+}
+
+func validateRegisterRequest(req *pb.RegisterRequest) error {
+	if req.User.Email == "" {
+		return fmt.Errorf("userService: email is required")
+	}
+	if req.User.Password == "" {
+		return fmt.Errorf("userService: password is required")
+	}
+	return nil
+}
+
+func (u *userService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	if err := validateRegisterRequest(req); err != nil {
+		return nil, err
+	}
+	data := transform.PbToUserPtr(req.User)
+	if err := u.UserRepository.Create(ctx, u.DB, data); err != nil {
+		return nil, err
+	}
+
+	tkn, err := u.authenticator.Generate(&authenticate.Payload{
+		UserID:    data.UserID,
+		UserName:  data.Email,
+		ExpiredAt: time.Now().Add(60 * 24 * time.Hour),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("unable to generate token: %v", err)
+	}
+
+	return &pb.RegisterResponse{
+		User: &pb.User{
+			UserId: data.UserID,
+		},
+		AccessToken: tkn.Token,
 	}, nil
 }
 

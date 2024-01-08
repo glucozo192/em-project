@@ -53,7 +53,7 @@ func NewHttpServer(
 		mux:      mux,
 		endpoint: endpoint,
 		server: &http.Server{
-			Addr: fmt.Sprintf(":%d", endpoint.Port),
+			Addr:    fmt.Sprintf(":%d", endpoint.Port),
 			Handler: allowCORS((mux)),
 		},
 	}

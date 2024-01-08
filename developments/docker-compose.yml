@@ -10,7 +10,7 @@ services:
     working_dir: /app/
     volumes:
       - "../:/app/"
-    entrypoint: bash ./developments/gen-proto.sh
+    entrypoint: bash ./developments/gen_proto.sh
 
   generate_sqlc:
     image: sqlc/sqlc:1.23.0

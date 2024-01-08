@@ -4,11 +4,15 @@ import (
 	"context"
 
 	"github.com/glu/shopvui/idl/pb"
+	"github.com/glu/shopvui/internal/userm/services"
+	"github.com/glu/shopvui/pkg/grpc_client"
+	"github.com/glu/shopvui/pkg/grpc_server"
+	"github.com/glu/shopvui/pkg/http_server"
 	postgres_client "github.com/glu/shopvui/pkg/postgres"
+	"github.com/glu/shopvui/utils/authenticate"
 
 	"github.com/glu/shopvui/configs"
 	"github.com/glu/shopvui/utils"
-	"github.com/jackc/pgx/v4"
 )
 
 var srv server
@@ -29,6 +33,10 @@ type server struct {
 	processors []processor
 	factories  []factory
 
+	userServer    *grpc_server.GrpcServer
+	gatewayServer *http_server.HttpServer
+
+	authenticator authenticate.Authenticator
 	// // repository
 	// userRepo    userRepo.UserRepo
 	// productRepo productRepo.ProductRepo
@@ -40,15 +48,15 @@ type server struct {
 	// config
 	config utils.Config
 
-	// deliveries
-	userDelivery pb.UserServiceServer
-
 	// database clients
 	postgresClient *postgres_client.PostgresClient
-	conn           *pgx.Conn
+	//conn           *pgx.Conn
 
-	// processors []processor
-	// factories  []factory
+	// grpc clients
+	userClient pb.UserServiceClient
+
+	// grpc conn clients
+	userConnClient *grpc_client.GrpcClient
 }
 
 // type processor interface {
@@ -64,7 +72,20 @@ type server struct {
 
 func (s *server) loadGrpcClients(ctx context.Context) error {
 	//connections
-	//s.userConnClient = grpc_client.NewGrpcClient(s.cfg.UserServiceEndpoint)
+	s.userConnClient = grpc_client.NewGrpcClient(s.cfg.UserServiceEndpoint)
+	return nil
+}
+
+func (s *server) loadUserServices(ctx context.Context) error {
+	var err error
+	s.authenticator, err = authenticate.NewPasetoAuthenticator(s.cfg.SymmetricKey)
+	if err != nil {
+		panic(err)
+	}
+	s.userService = services.NewUserService(
+		s.postgresClient,
+		s.authenticator,
+	)
 	return nil
 }
 
@@ -97,7 +118,7 @@ func (s *server) loadPostgres(ctx context.Context) {
 	}
 }
 
-func start(ctx context.Context, errChan chan error) error {
+func start(ctx context.Context, errChan chan error) {
 	for _, f := range srv.factories {
 		if err := f.Connect(ctx); err != nil {
 			errChan <- err
@@ -110,8 +131,6 @@ func start(ctx context.Context, errChan chan error) error {
 			}
 		}(p)
 	}
-
-	return nil
 }
 
 func stop(ctx context.Context) error {

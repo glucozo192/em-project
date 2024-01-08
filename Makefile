@@ -46,7 +46,7 @@ evans:
 
 
 gen-proto:
-	docker-compose -f ${COMPOSE_FILE} up generate_pb_go --build
+	docker-compose -f ${COMPOSE_FILE} up generate_pb_go
 
 start-postgres:
 	docker compose -f ${COMPOSE_FILE} up postgres -d

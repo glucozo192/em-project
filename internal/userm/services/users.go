@@ -11,6 +11,7 @@ import (
 	"github.com/glu/shopvui/transform"
 	"github.com/glu/shopvui/utils"
 	"github.com/glu/shopvui/utils/authenticate"
+	"github.com/google/uuid"
 )
 
 type userService struct {
@@ -62,7 +63,8 @@ func (u *userService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		return nil, err
 	}
 	data := transform.PbToUserPtr(req.User)
-	if err := u.UserRepository.Create(ctx, u.DB, data); err != nil {
+	data.UserID = uuid.NewString()
+	if err := u.UserRepository.CreateUserV2(ctx, u.DB, data); err != nil {
 		return nil, err
 	}
 
@@ -76,9 +78,7 @@ func (u *userService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	}
 
 	return &pb.RegisterResponse{
-		User: &pb.User{
-			UserId: data.UserID,
-		},
+		UserId:      data.UserID,
 		AccessToken: tkn.Token,
 	}, nil
 }

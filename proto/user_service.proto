@@ -6,14 +6,18 @@ import "user.proto";
 import "google/api/annotations.proto";
 
 service UserService {
-    // for user login
     rpc Login (LoginRequest) returns (LoginResponse){
         option (google.api.http) = {
             post: "/v1/user/login"
             body: "*"
         };
-    }
+    };
 
-    rpc Register(RegisterRequest) returns (RegisterResponse);
+    rpc Register(RegisterRequest) returns (RegisterResponse) {
+        option (google.api.http) = {
+            post: "/v1/user/register"
+            body: "*"
+        };
+    };
     rpc GetMe(GetMeRequest) returns (GetMeResponse);
 }

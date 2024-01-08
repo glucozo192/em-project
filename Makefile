@@ -62,3 +62,9 @@ migrate:
 
 user-migrate:
 	docker-compose -f ${COMPOSE_FILE} up user_migrate
+
+start-gateway:
+	go run ./main.go gateway
+
+start-user:
+	go run ./main.go user

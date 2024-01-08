@@ -11,7 +11,7 @@ message LoginRequest {
 }
 
 message LoginResponse {
-    User user = 1;
+    string user_id = 1;
     string access_token = 2;
 }
 
@@ -20,7 +20,7 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-    User user = 1;
+    string user_id = 1;
     string access_token = 2;
 }
 

@@ -10,58 +10,58 @@ import (
 	"github.com/glu/shopvui/transformhelpers"
 )
 
-// "pb.Product": target: "", Omitted: true, OneofDecl: ""
-// "pb.ListAllProductsResponse": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.FileOptions": target: "", Omitted: true, OneofDecl: ""
-// "pb.User": target: "User", Omitted: false, OneofDecl: ""
-// "pb.GetMeResponse": target: "", Omitted: true, OneofDecl: ""
-// "google.api.CustomHttpPattern": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.Timestamp": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.FileDescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.EnumValueDescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.MethodDescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.MethodOptions": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.UninterpretedOption": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.FieldDescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.OneofDescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.EnumDescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.EnumOptions": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.GeneratedCodeInfo": target: "", Omitted: true, OneofDecl: ""
-// "pb.InsertProductResponse": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.FileDescriptorSet": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.DescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "pb.LoginRequest": target: "", Omitted: true, OneofDecl: ""
-// "pb.ListProductsResponse": target: "", Omitted: true, OneofDecl: ""
 // "pb.RegisterRequest": target: "", Omitted: true, OneofDecl: ""
-// "pb.GetMeRequest": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.ServiceDescriptorProto": target: "", Omitted: true, OneofDecl: ""
-// "pb.ListProductsRequest": target: "", Omitted: true, OneofDecl: ""
-// "pb.DeleteProductRequest": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.ExtensionRangeOptions": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.FieldDescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "pb.User": target: "User", Omitted: false, OneofDecl: ""
+// "pb.ListAllProductsResponse": target: "", Omitted: true, OneofDecl: ""
 // "pb.DeleteProductResponse": target: "", Omitted: true, OneofDecl: ""
 // "pb.LoginResponse": target: "", Omitted: true, OneofDecl: ""
-// "google.api.Http": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.FileOptions": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.MessageOptions": target: "", Omitted: true, OneofDecl: ""
 // "google.protobuf.OneofOptions": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.EnumValueOptions": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.FieldOptions": target: "", Omitted: true, OneofDecl: ""
 // "google.protobuf.ServiceOptions": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.SourceCodeInfo": target: "", Omitted: true, OneofDecl: ""
-// "pb.InsertProductRequest": target: "", Omitted: true, OneofDecl: ""
 // "pb.ListAllProductsRequest": target: "", Omitted: true, OneofDecl: ""
 // "pb.RegisterResponse": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.ExtensionRangeOptions": target: "", Omitted: true, OneofDecl: ""
-// "google.protobuf.MessageOptions": target: "", Omitted: true, OneofDecl: ""
+// "google.api.CustomHttpPattern": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.FileDescriptorSet": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.EnumValueDescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.EnumValueOptions": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.MethodOptions": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.SourceCodeInfo": target: "", Omitted: true, OneofDecl: ""
+// "pb.DeleteProductRequest": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.DescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.EnumDescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "pb.InsertProductRequest": target: "", Omitted: true, OneofDecl: ""
+// "pb.ListProductsResponse": target: "", Omitted: true, OneofDecl: ""
 // "google.api.HttpRule": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.ServiceDescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.MethodDescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.EnumOptions": target: "", Omitted: true, OneofDecl: ""
+// "pb.GetMeResponse": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.OneofDescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.UninterpretedOption": target: "", Omitted: true, OneofDecl: ""
+// "pb.InsertProductResponse": target: "", Omitted: true, OneofDecl: ""
+// "pb.ListProductsRequest": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.Timestamp": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.FileDescriptorProto": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.FieldOptions": target: "", Omitted: true, OneofDecl: ""
+// "pb.LoginRequest": target: "", Omitted: true, OneofDecl: ""
+// "google.protobuf.GeneratedCodeInfo": target: "", Omitted: true, OneofDecl: ""
+// "pb.Product": target: "", Omitted: true, OneofDecl: ""
+// "pb.GetMeRequest": target: "", Omitted: true, OneofDecl: ""
+// "google.api.Http": target: "", Omitted: true, OneofDecl: ""
 
 // Target struct fields:
-// Field: "FirstName", Type: "string", isPointer: false
-// Field: "LastName", Type: "string", isPointer: false
-// Field: "Active", Type: "pgtype.Bool", isPointer: false
+// Field: "Email", Type: "string", isPointer: false
 // Field: "CreatedAt", Type: "pgtype.Timestamptz", isPointer: false
 // Field: "UpdatedAt", Type: "pgtype.Timestamptz", isPointer: false
 // Field: "DeletedAt", Type: "pgtype.Timestamptz", isPointer: false
 // Field: "UserID", Type: "string", isPointer: false
-// Field: "Email", Type: "string", isPointer: false
 // Field: "Password", Type: "string", isPointer: false
+// Field: "FirstName", Type: "string", isPointer: false
+// Field: "LastName", Type: "string", isPointer: false
+// Field: "Active", Type: "pgtype.Bool", isPointer: false
 
 // ===============================
 // fdp.TypeName: ".google.protobuf.Timestamp"

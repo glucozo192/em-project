@@ -41,18 +41,19 @@ func (r *UserRepository) Create(ctx context.Context, db models.DBTX, user *model
 }
 
 func (r *UserRepository) CreateUserV2(ctx context.Context, db models.DBTX, user *models.User) error {
-	var params models.CreateUserParams
-	m := mapCommonFields(user, params)
-
-	_, err := pgxutil.Insert(ctx, db, "users", m)
+	params := models.CreateUserParams{}
+	m := mapCommonFields2(*user, params)
+	result := make([]map[string]interface{}, 0)
+	result = append(result, m)
+	_, err := pgxutil.Insert(ctx, db, "users", result)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func mapCommonFields(model1 any, model2 any) []map[string]any {
-	result := make([]map[string]interface{}, 0)
+func mapCommonFields2(model1 interface{}, model2 interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
 
 	val1 := reflect.ValueOf(model1)
 	val2 := reflect.ValueOf(model2)
@@ -69,13 +70,9 @@ func mapCommonFields(model1 any, model2 any) []map[string]any {
 			tag2 := field2.Tag.Get("json")
 
 			if tag1 == tag2 {
-				data := make(map[string]interface{})
-				data[tag1] = val1.Field(i).Interface()
-				data[tag2] = val2.Field(j).Interface()
-				result = append(result, data)
+				result[tag1] = val1.Field(i).Interface()
 			}
 		}
 	}
-
 	return result
 }

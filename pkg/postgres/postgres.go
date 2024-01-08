@@ -30,6 +30,7 @@ func NewClient(connString string) (*PostgresClient, error) {
 }
 
 func (c *PostgresClient) Connect(ctx context.Context) error {
+	fmt.Println("go to connect")
 	pool, err := pgxpool.NewWithConfig(ctx, c.cfg)
 	if err != nil {
 		return fmt.Errorf("unable to create new connection to %w", err)

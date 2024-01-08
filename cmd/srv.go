@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/glu/shopvui/idl/pb"
 	"github.com/glu/shopvui/internal/userm/services"
@@ -73,6 +74,9 @@ type server struct {
 func (s *server) loadGrpcClients(ctx context.Context) error {
 	//connections
 	s.userConnClient = grpc_client.NewGrpcClient(s.cfg.UserServiceEndpoint)
+
+	// clients for user service
+	s.userClient = pb.NewUserServiceClient(s.userConnClient)
 	return nil
 }
 
@@ -113,6 +117,7 @@ func (s *server) loadDefault(ctx context.Context) {
 func (s *server) loadPostgres(ctx context.Context) {
 	var err error
 	srv.postgresClient, err = postgres_client.NewClient(srv.cfg.PostgresUrl)
+	fmt.Println("connect to postgres:", srv.cfg.PostgresUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -125,7 +130,7 @@ func start(ctx context.Context, errChan chan error) {
 		}
 	}
 	for _, p := range srv.processors {
-		go func(p processor) {
+		func(p processor) {
 			if err := p.Start(ctx); err != nil {
 				errChan <- err
 			}

@@ -64,7 +64,5 @@ func loadGateway(ctx context.Context) {
 		srv.userClient)
 
 	srv.processors = append(srv.processors, srv.gatewayServer)
-	srv.factories = append(srv.factories,
-		srv.userConnClient,
-	)
+	srv.factories = append(srv.factories, srv.userConnClient)
 }

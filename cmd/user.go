@@ -12,7 +12,7 @@ import (
 
 // userCmd represents the User command
 var userCmd = &cobra.Command{
-	Use:   "User",
+	Use:   "user",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -62,7 +62,9 @@ func loadUser(ctx context.Context) {
 		panic(err)
 	}
 
-	srv.loadUserServices(ctx)
+	if err := srv.loadUserServices(ctx); err != nil {
+		panic(err)
+	}
 
 	srv.userServer = grpc_server.NewGrpcServer(srv.cfg.UserServiceEndpoint)
 	pb.RegisterUserServiceServer(srv.userServer.Server, srv.userService)

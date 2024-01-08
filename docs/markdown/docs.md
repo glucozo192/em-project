@@ -307,7 +307,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| user | [User](#pb-User) |  |  |
+| user_id | [string](#string) |  |  |
 | access_token | [string](#string) |  |  |
 
 
@@ -338,7 +338,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| user | [User](#pb-User) |  |  |
+| user_id | [string](#string) |  |  |
 | access_token | [string](#string) |  |  |
 
 
@@ -375,7 +375,7 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Login | [LoginRequest](#pb-LoginRequest) | [LoginResponse](#pb-LoginResponse) | for user login |
+| Login | [LoginRequest](#pb-LoginRequest) | [LoginResponse](#pb-LoginResponse) |  |
 | Register | [RegisterRequest](#pb-RegisterRequest) | [RegisterResponse](#pb-RegisterResponse) |  |
 | GetMe | [GetMeRequest](#pb-GetMeRequest) | [GetMeResponse](#pb-GetMeResponse) |  |
 

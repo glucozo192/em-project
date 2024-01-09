@@ -30,3 +30,11 @@ message GetMeRequest {
 message GetMeResponse {
     User user = 1;
 }
+
+message GetUserByIDRequest {
+    string user_id = 1;
+}
+
+message GetUserByIDResponse {
+    User user = 1;
+}

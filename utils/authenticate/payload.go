@@ -1,47 +1,38 @@
 package authenticate
 
 import (
-	"encoding/json"
-	"fmt"
+	"errors"
 	"time"
 )
 
+// Different types of error returned by the VerifyToken function
+var (
+	ErrInvalidToken = errors.New("token is invalid")
+	ErrExpiredToken = errors.New("token has expired")
+)
+
+// Payload contains the payload data of the token
 type Payload struct {
 	UserID    string    `json:"user_id"`
-	UserName  string    `json:"user_name"`
-	Ip        string    `json:"ip"`
-	Token     string    `json:"token"`
-	UserAgent string    `json:"user_agent"`
+	IssuedAt  time.Time `json:"issued_at"`
 	ExpiredAt time.Time `json:"expired_at"`
-	IssueAt   time.Time `json:"issue_at"`
-	Roles     []string  `json:"roles"`
 }
 
-func (p *Payload) Valid() error {
-	if time.Now().After(p.ExpiredAt) {
-		return fmt.Errorf("")
-	}
-	return nil
-}
+// NewPayload creates a new token payload with a specific username and duration
+func NewPayload(userID string, duration time.Duration) (*Payload, error) {
 
-func (p *Payload) ToJSONString() (string, error) {
-	m, err := json.Marshal(p)
-	if err != nil {
-		return "", nil
-	}
-	return string(m), nil
-}
-
-func (p *Payload) AddExpired(expirationTime time.Duration) {
-	t := time.Now()
-	p.ExpiredAt = t.Add(expirationTime)
-
-}
-
-func JSONStringToPayload(str string) (*Payload, error) {
-	payload := &Payload{}
-	if err := json.Unmarshal([]byte(str), payload); err != nil {
-		return nil, err
+	payload := &Payload{
+		UserID:    userID,
+		IssuedAt:  time.Now(),
+		ExpiredAt: time.Now().Add(duration),
 	}
 	return payload, nil
+}
+
+// Valid checks if the token payload is valid or not
+func (payload *Payload) Valid() error {
+	if time.Now().After(payload.ExpiredAt) {
+		return ErrExpiredToken
+	}
+	return nil
 }

@@ -102,14 +102,10 @@ func (s *server) LoadConfig(ctx context.Context) error {
 	return nil
 }
 
-func (s *server) loadDeliveries(ctx context.Context) error {
-	//s.userDelivery = deliveries.NewUserDelivery(s.userService)
-	// s.productSrv = productSrv.NewProductService(s.conn)
-	return nil
-}
-
 func (s *server) loadDefault(ctx context.Context) {
-	if err := s.loadDeliveries(ctx); err != nil {
+	var err error
+	s.authenticator, err = authenticate.NewPasetoAuthenticator(s.cfg.SymmetricKey)
+	if err != nil {
 		panic(err)
 	}
 }

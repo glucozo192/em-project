@@ -79,10 +79,40 @@
           "UserService"
         ]
       }
+    },
+    "/v1/user/{userId}": {
+      "get": {
+        "operationId": "UserService_GetUserByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetUserByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
     }
   },
   "definitions": {
-    "pbGetMeResponse": {
+    "pbGetUserByIDResponse": {
       "type": "object",
       "properties": {
         "user": {

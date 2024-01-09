@@ -253,6 +253,14 @@
                 </li>
               
                 <li>
+                  <a href="#pb.GetUserByIDRequest"><span class="badge">M</span>GetUserByIDRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#pb.GetUserByIDResponse"><span class="badge">M</span>GetUserByIDResponse</a>
+                </li>
+              
+                <li>
                   <a href="#pb.LoginRequest"><span class="badge">M</span>LoginRequest</a>
                 </li>
               
@@ -782,6 +790,54 @@
 
         
       
+        <h3 id="pb.GetUserByIDRequest">GetUserByIDRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="pb.GetUserByIDResponse">GetUserByIDResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user</td>
+                  <td><a href="#pb.User">User</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="pb.LoginRequest">LoginRequest</h3>
         <p></p>
 
@@ -942,9 +998,9 @@
               </tr>
             
               <tr>
-                <td>GetMe</td>
-                <td><a href="#pb.GetMeRequest">GetMeRequest</a></td>
-                <td><a href="#pb.GetMeResponse">GetMeResponse</a></td>
+                <td>GetUserByID</td>
+                <td><a href="#pb.GetUserByIDRequest">GetUserByIDRequest</a></td>
+                <td><a href="#pb.GetUserByIDResponse">GetUserByIDResponse</a></td>
                 <td><p></p></td>
               </tr>
             
@@ -983,6 +1039,16 @@
                 <td>POST</td>
                 <td>/v1/user/register</td>
                 <td>*</td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>GetUserByID</td>
+                <td>GET</td>
+                <td>/v1/user/{user_id}</td>
+                <td></td>
               </tr>
               
             

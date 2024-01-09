@@ -14,13 +14,5 @@
 
 package pb
 
-const (
-	ProductService_InsertProduct   = "/pb.ProductService/InsertProduct"
-	ProductService_ListProducts    = "/pb.ProductService/ListProducts"
-	ProductService_ListAllProducts = "/pb.ProductService/ListAllProducts"
-	ProductService_DeleteProduct   = "/pb.ProductService/DeleteProduct"
-)
-
-const ()
-
-var ProductService_APIs = []string{}
+// * [pb cay_cu.pb.go], pb
+//s.Desc.FullName: pb.UserService

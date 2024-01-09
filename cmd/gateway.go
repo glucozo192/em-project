@@ -54,7 +54,6 @@ func loadGateway(ctx context.Context) {
 	srv.loadDefault(ctx)
 
 	srv.gatewayServer = http_server.NewHttpServer(func(mux *runtime.ServeMux) {
-
 		if err := pb.RegisterUserServiceHandlerClient(ctx, mux, srv.userClient); err != nil {
 			panic(err)
 		}

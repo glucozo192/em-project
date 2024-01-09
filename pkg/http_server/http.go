@@ -34,27 +34,26 @@ func NewHttpServer(
 
 		// runtime.WithErrorHandler(forwardErrorResponse),
 	)
+	fmt.Println("NewHttpServer")
 	handler(mux)
-	// middlewares := []middlewareFunc{
-	// 	allowCORS,
-	// 	authorized(
-	// 		authenticator,
-	// 		client,
-	// 		expirable.NewLRU[string, *pb.Permissions](5, nil, 24*time.Hour),
-	// 	),
-	// }
+	middlewares := []middlewareFunc{
+		allowCORS,
+		authorized(
+			authenticator,
+		),
+	}
 
-	// var handleR http.Handler = mux
-	// for _, handle := range middlewares {
-	// 	handleR = handle(handleR)
-	// }
+	var handleR http.Handler = mux
+	for _, handle := range middlewares {
+		handleR = handle(handleR)
+	}
 
 	return &HttpServer{
 		mux:      mux,
 		endpoint: endpoint,
 		server: &http.Server{
 			Addr:    fmt.Sprintf(":%d", endpoint.Port),
-			Handler: allowCORS((mux)),
+			Handler: handleR,
 		},
 	}
 }

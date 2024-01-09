@@ -14,13 +14,14 @@
 
 package pb
 
-const (
-	ProductService_InsertProduct   = "/pb.ProductService/InsertProduct"
-	ProductService_ListProducts    = "/pb.ProductService/ListProducts"
-	ProductService_ListAllProducts = "/pb.ProductService/ListAllProducts"
-	ProductService_DeleteProduct   = "/pb.ProductService/DeleteProduct"
-)
+var AllPathToMethodMap = map[string]string{
+	UserService_Login_API:       "POST /v1/user/login",
+	UserService_Register_API:    "POST /v1/user/register",
+	UserService_GetUserByID_API: "GET /v1/user/*",
+}
 
-const ()
-
-var ProductService_APIs = []string{}
+var AllPathToMethodSlice = []string{
+	"UserService_Login_API",
+	"UserService_Register_API",
+	"UserService_GetUserByID_API",
+}

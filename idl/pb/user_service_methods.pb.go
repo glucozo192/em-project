@@ -15,7 +15,19 @@
 package pb
 
 const (
-	UserService_Login    = "/pb.UserService/Login"
-	UserService_Register = "/pb.UserService/Register"
-	UserService_GetMe    = "/pb.UserService/GetMe"
+	UserService_Login       = "/pb.UserService/Login"
+	UserService_Register    = "/pb.UserService/Register"
+	UserService_GetUserByID = "/pb.UserService/GetUserByID"
 )
+
+const (
+	UserService_Login_API       = "UserService_Login_API"
+	UserService_Register_API    = "UserService_Register_API"
+	UserService_GetUserByID_API = "UserService_GetUserByID_API"
+)
+
+var UserService_APIs = []string{
+	UserService_Login_API,
+	UserService_Register_API,
+	UserService_GetUserByID_API,
+}

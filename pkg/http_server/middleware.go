@@ -4,15 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
 
+	"github.com/glu/shopvui/idl/pb"
 	"github.com/glu/shopvui/utils/authenticate"
-	mtdt "github.com/glu/shopvui/utils/metadata"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -24,26 +24,17 @@ var (
 	InfoKey       = "info_key"
 	CookieKey     = "h5token"
 
-	ignoredAPIs         []string
-	invalidateCacheAPIs []string
+	ignoredAPIs []string
 )
 
+func init() {
+	ignoredAPIs = []string{
+		pb.AllPathToMethodMap[pb.UserService_Login_API],
+		pb.AllPathToMethodMap[pb.UserService_Register_API],
+	}
+}
 
 type payloadKeys struct{}
-
-// GetClientIP get client IP from HTTP request
-func GetClientIP(req *http.Request) string {
-	md, ok := metadata.FromIncomingContext(req.Context())
-	if !ok {
-		return ""
-	}
-	clientIP := md.Get(mtdt.MDXForwardedFor)
-	if len(clientIP) == 0 {
-		return ""
-	}
-
-	return clientIP[0]
-}
 
 func allowCORS(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -55,48 +46,6 @@ func allowCORS(h http.Handler) http.Handler {
 		}
 	})
 }
-
-type mapMetaDataFunc func(context.Context, *http.Request) metadata.MD
-
-// MapMetaDataWithBearerToken ...
-func MapMetaDataWithBearerToken(authenticator authenticate.Authenticator) mapMetaDataFunc {
-	return func(ctx context.Context, r *http.Request) metadata.MD {
-
-		md := mtdt.ImportIpToCtx(GetClientIP(r))
-		payload, ok := r.Context().Value(payloadKeys{}).(*authenticate.Payload)
-		if !ok {
-			return md
-		}
-		md = metadata.Join(md, mtdt.ImportUserInfoToCtx(payload))
-
-		return md
-	}
-}
-
-// func MapMetaDataWithBearerToken(authenticator authenticate.Authenticator) mapMetaDataFunc {
-// 	return func(ctx context.Context, r *http.Request) metadata.MD {
-// 		md := mtdt.ImportIpToCtx(GetClientIP(r))
-
-// 		authorization := r.Header.Get(Authorization)
-
-// 		if authorization != "" {
-// 			bearerToken := strings.Split(authorization, Bearer+" ")
-// 			if len(bearerToken) < 2 {
-// 				return md
-// 			}
-// 			token := bearerToken[1]
-// 			payload, err := authenticator.Verify(token)
-// 			if err != nil {
-// 				return md
-// 			}
-// 			payload.Token = token
-
-// 			md = metadata.Join(md, mtdt.ImportUserInfoToCtx(payload))
-// 		}
-
-// 		return md
-// 	}
-// }
 
 type Response struct {
 	Code    int      `json:"code"`
@@ -142,4 +91,41 @@ func forwardErrorResponse(ctx context.Context, s *runtime.ServeMux, m runtime.Ma
 	}
 
 	runtime.DefaultHTTPErrorHandler(ctx, s, m, w, r, errors.New(errStr))
+}
+
+func authorized(
+	authenticator authenticate.Authenticator,
+) middlewareFunc {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+			incomingPath := fmt.Sprintf("%s %s", r.Method, r.URL.Path)
+			fmt.Println("incomingPath: ", incomingPath)
+
+			if isCheckingPassed(ignoredAPIs, incomingPath) {
+				h.ServeHTTP(w, r)
+				return
+			}
+
+			authorization := r.Header.Get(Authorization)
+			scheme, token, found := strings.Cut(authorization, " ")
+			if !found {
+				ErrorResponse(w, http.StatusUnauthorized, fmt.Errorf("invalid authorization token"))
+				return
+			}
+			if !strings.EqualFold(scheme, Bearer) {
+				ErrorResponse(w, http.StatusUnauthorized, fmt.Errorf("invalid authorization token"))
+				return
+			}
+			fmt.Println("Verify(token): ", token)
+			payload, err := authenticator.VerifyToken(token)
+			fmt.Println("payload", payload)
+			if err != nil {
+				ErrorResponse(w, http.StatusUnauthorized, err)
+				return
+			}
+
+			h.ServeHTTP(w, r.WithContext(context.WithValue(ctx, payloadKeys{}, payload)))
+		})
+	}
 }

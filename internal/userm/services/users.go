@@ -20,6 +20,7 @@ type userService struct {
 		GetByEmail(ctx context.Context, db models.DBTX, email string) (*models.User, error)
 		CreateUserV2(ctx context.Context, db models.DBTX, user *models.User) error
 		Create(ctx context.Context, db models.DBTX, user *models.User) error
+		GetUserByID(ctx context.Context, db models.DBTX, userID string) (*models.User, error)
 	}
 	authenticator authenticate.Authenticator
 	pb.UnimplementedUserServiceServer
@@ -45,7 +46,14 @@ func (u *userService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 		return nil, err
 	}
 
-	return &pb.LoginResponse{}, nil
+	token, _, err := u.authenticator.CreateToken(user.UserID, 24*time.Hour)
+	if err != nil {
+		return nil, fmt.Errorf("unable to generate token: %v", err)
+	}
+	return &pb.LoginResponse{
+		UserId:      user.UserID,
+		AccessToken: token,
+	}, nil
 }
 
 func validateRegisterRequest(req *pb.RegisterRequest) error {
@@ -55,6 +63,7 @@ func validateRegisterRequest(req *pb.RegisterRequest) error {
 	if req.User.Password == "" {
 		return fmt.Errorf("userService: password is required")
 	}
+
 	return nil
 }
 
@@ -64,22 +73,36 @@ func (u *userService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 	}
 	data := transform.PbToUserPtr(req.User)
 	data.UserID = uuid.NewString()
+	hashedPwd, err := utils.HashPassword(data.Password)
+	if err != nil {
+		return nil, fmt.Errorf("cant hash your password")
+	}
+
+	data.Password = hashedPwd
 	if err := u.UserRepository.CreateUserV2(ctx, u.DB, data); err != nil {
 		return nil, err
 	}
 
-	tkn, err := u.authenticator.Generate(&authenticate.Payload{
-		UserID:    data.UserID,
-		UserName:  data.Email,
-		ExpiredAt: time.Now().Add(60 * 24 * time.Hour),
-	})
+	token, _, err := u.authenticator.CreateToken(data.UserID, 24*time.Hour)
 	if err != nil {
 		return nil, fmt.Errorf("unable to generate token: %v", err)
 	}
 
 	return &pb.RegisterResponse{
 		UserId:      data.UserID,
-		AccessToken: tkn.Token,
+		AccessToken: token,
+	}, nil
+}
+
+func (u *userService) GetUserByID(ctx context.Context, req *pb.GetUserByIDRequest) (*pb.GetUserByIDResponse, error) {
+
+	user, err := u.UserRepository.GetUserByID(ctx, u.DB, req.UserId)
+	if err != nil {
+		return nil, fmt.Errorf("userService: %w", err)
+	}
+
+	return &pb.GetUserByIDResponse{
+		User: transform.UserToPbPtr(user),
 	}, nil
 }
 

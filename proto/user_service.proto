@@ -19,5 +19,9 @@ service UserService {
             body: "*"
         };
     };
-    rpc GetMe(GetMeRequest) returns (GetMeResponse);
+    rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse){
+        option (google.api.http) = {
+            get: "/v1/user/{user_id}"
+        };
+    };
 }

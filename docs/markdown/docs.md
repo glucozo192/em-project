@@ -22,6 +22,8 @@
 - [user.proto](#user-proto)
     - [GetMeRequest](#pb-GetMeRequest)
     - [GetMeResponse](#pb-GetMeResponse)
+    - [GetUserByIDRequest](#pb-GetUserByIDRequest)
+    - [GetUserByIDResponse](#pb-GetUserByIDResponse)
     - [LoginRequest](#pb-LoginRequest)
     - [LoginResponse](#pb-LoginResponse)
     - [RegisterRequest](#pb-RegisterRequest)
@@ -283,6 +285,36 @@
 
 
 
+<a name="pb-GetUserByIDRequest"></a>
+
+### GetUserByIDRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| user_id | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="pb-GetUserByIDResponse"></a>
+
+### GetUserByIDResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| user | [User](#pb-User) |  |  |
+
+
+
+
+
+
 <a name="pb-LoginRequest"></a>
 
 ### LoginRequest
@@ -377,7 +409,7 @@
 | ----------- | ------------ | ------------- | ------------|
 | Login | [LoginRequest](#pb-LoginRequest) | [LoginResponse](#pb-LoginResponse) |  |
 | Register | [RegisterRequest](#pb-RegisterRequest) | [RegisterResponse](#pb-RegisterResponse) |  |
-| GetMe | [GetMeRequest](#pb-GetMeRequest) | [GetMeResponse](#pb-GetMeResponse) |  |
+| GetUserByID | [GetUserByIDRequest](#pb-GetUserByIDRequest) | [GetUserByIDResponse](#pb-GetUserByIDResponse) |  |
 
  
 
